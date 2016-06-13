@@ -39,3 +39,4 @@ packages/
 tools/FAKE/
 deploy/
 .fake/
+.paket/paket.exe
