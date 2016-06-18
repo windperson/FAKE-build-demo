@@ -5,12 +5,16 @@ open Fake
 // Properties
 let buildDir = "./build/"
 let testDir = "./test/"
+let deployDir = "./deploy/"
+
+// version info
+let version = "0.2"  // or retrieve from CI server
 
 RestorePackages()
 
 // Targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir]
+    CleanDirs [buildDir; testDir; deployDir]
 )
 
 Target "BuildApp" (fun _ ->
@@ -33,6 +37,12 @@ Target "Test" (fun _ ->
                 OutputFile = testDir + "TestResults.xml"})
 )
 
+Target "Zip" (fun _ ->
+    !! (buildDir + "/**/*.*")
+        -- "*.zip"
+        |> Zip buildDir (deployDir + "Calculator." + version + ".zip")
+)
+
 // Default target
 Target "Default" (fun _ ->
     trace "Hello World from FAKE"
@@ -43,6 +53,7 @@ Target "Default" (fun _ ->
     ==> "BuildApp"
     ==> "BuildTest"
     ==> "Test"
+    ==> "Zip"
     ==> "Default"
 
 // start build
