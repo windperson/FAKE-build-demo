@@ -18,13 +18,4 @@ if ( ! (Test-Path $fakeExe)){
     }
 }
 
-
-$buildConfigArgs =  $Args -join ','
-
-[string[]]$buildArgs = 'build.fsx'
-
-if( $buildConfigArgs ) {
-    $buildArgs = $buildArgs , $buildConfigArgs
-}
-
-Start-Process $fakeExe -ArgumentList( $buildArgs ) -NoNewWindow -Wait
+Start-Process $fakeExe $Args -NoNewWindow -Wait
