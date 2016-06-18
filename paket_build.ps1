@@ -1,14 +1,23 @@
-Start-Process ".paket\paket.bootstrapper.exe" -NoNewWindow -Wait
+$paketExe = ".paket\paket.exe"
 
-if ($LASTEXITCODE -eq 1 ) {
-    exit $LASTEXITCODE
+if ( ! (Test-Path $paketExe )){
+    Start-Process ".paket\paket.bootstrapper.exe" -NoNewWindow -Wait
+    if ($LASTEXITCODE -eq 1 ) {
+        echo "Install paket failed."
+        exit $LASTEXITCODE
+    }
 }
 
-Start-Process ".paket\paket.exe" -ArgumentList 'restore' -NoNewWindow -Wait
+$fakeExe = "packages\FAKE\tools\FAKE.exe"
 
-if ($LASTEXITCODE -eq 1 ) {
-    exit $LASTEXITCODE
+if ( ! (Test-Path $fakeExe)){
+    Start-Process $paketExe -ArgumentList 'restore' -NoNewWindow -Wait
+    if ($LASTEXITCODE -eq 1 ) {
+        echo "Install FAKE failed."
+        exit $LASTEXITCODE
+    }
 }
+
 
 $buildConfigArgs =  $Args -join ','
 
@@ -18,4 +27,4 @@ if( $buildConfigArgs ) {
     $buildArgs = $buildArgs , $buildConfigArgs
 }
 
-Start-Process "packages\FAKE\tools\FAKE.exe" -ArgumentList( $buildArgs ) -NoNewWindow -Wait
+Start-Process $fakeExe -ArgumentList( $buildArgs ) -NoNewWindow -Wait
