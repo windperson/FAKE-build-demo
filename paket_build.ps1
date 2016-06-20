@@ -1,6 +1,7 @@
 $paketBootStrapper = "./.paket/paket.bootstrapper.exe"
 
 if ( ! (Test-Path $paketBootStrapper)){
+    echo "Download paket bootstrapper..."
     $url = "http://github.com/fsprojects/Paket/releases/download/3.1.6/paket.bootstrapper.exe"
     try{
         $wc = New-Object System.Net.WebClient
@@ -17,7 +18,8 @@ if ( ! (Test-Path $paketBootStrapper)){
 $paketExe = ".paket\paket.exe"
 
 if ( ! (Test-Path $paketExe )){
-    Start-Process ".paket\paket.bootstrapper.exe" -NoNewWindow -Wait
+    echo "Download paket executable..."
+    Start-Process ".paket\paket.bootstrapper.exe" -NoNewWindow -Wait -PassThru
     if ($LASTEXITCODE -eq 1 -and ! (Test-Path $paketExe) ) {
         echo "Install paket failed."
         exit $LASTEXITCODE
@@ -27,7 +29,8 @@ if ( ! (Test-Path $paketExe )){
 $fakeExe = "packages\FAKE\tools\FAKE.exe"
 
 if ( ! (Test-Path $fakeExe)){
-    Start-Process $paketExe -ArgumentList 'restore' -NoNewWindow -Wait
+    echo "Restore FAKE executable..."
+    Start-Process $paketExe -ArgumentList 'restore' -NoNewWindow -Wait -PassThru
     if ($LASTEXITCODE -eq 1 -and ! (Test-Path $fakeExe) ) {
         echo "Install FAKE failed."
         exit $LASTEXITCODE
