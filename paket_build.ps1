@@ -37,4 +37,6 @@ if ( ! (Test-Path $fakeExe)){
     }
 } 
 
-Start-Process $fakeExe $Args -NoNewWindow -Wait
+$buildProcess = Start-Process $fakeExe $Args -NoNewWindow -Wait -PassThru
+$buildProcess.WaitForExit()
+
